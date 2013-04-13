@@ -52,7 +52,7 @@ activate_driver_for_core_rev()
 test -f /targets/links/scratchbox.config && exit 0
 
 if [ "$1" == "--force" ]; then
-	modprobe pvrsrvkm &> /dev/null
+	modprobe pvrsrvkm
 	mkdir -p /var/lib/opengles-sgx-img
 	touch /var/lib/opengles-sgx-img/upgrade
 else
@@ -61,7 +61,7 @@ fi
 
 if [ \! -f /proc/pvr/version ]; then
 	if [ "$1" != "--force" ]; then
-		echo "SGX driver failed to initialize" > /dev/console
+		echo "SGX driver failed to initialize"
 	fi
 	exit 1
 fi
@@ -70,12 +70,12 @@ SGX_CORE_REV=$(grep -Eo "SGX revision = ([0-9][.][0-9][.][0-9])" \
 	       /proc/pvr/version | cut -d= -f 2 | tr -d ". ")
 
 if [ "$SGX_CORE_REV" = "" ]; then
-	echo "Unable to determine SGX core revision" > /dev/console
+	echo "Unable to determine SGX core revision"
 	exit 1
 fi
 
 if [ \! -f /usr/sbin/pvrsrvinit_r$SGX_CORE_REV ]; then
-	echo "Unsupported SGX core revision" > /dev/console
+	echo "Unsupported SGX core revision"
 	exit 1
 fi
 
