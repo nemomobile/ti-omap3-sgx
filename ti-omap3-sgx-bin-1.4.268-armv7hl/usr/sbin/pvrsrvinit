@@ -83,8 +83,7 @@ fi
 if [ "$(readlink /usr/lib/libsrv_um.so)" != "libsrv_um_r${SGX_CORE_REV}.so" -o \
      -e /var/lib/opengles-sgx-img/upgrade ]; then
 	activate_driver_for_core_rev $SGX_CORE_REV
-	rm /var/lib/opengles-sgx-img/upgrade
-	rmdir /var/lib/opengles-sgx-img
+	rm -rf /var/lib/opengles-sgx-img
 fi
 
 if [ "$1" != "--force" ]; then
