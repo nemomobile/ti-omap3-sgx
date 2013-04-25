@@ -87,5 +87,8 @@ if [ "$(readlink /usr/lib/libsrv_um.so)" != "libsrv_um_r${SGX_CORE_REV}.so" -o \
 fi
 
 if [ "$1" != "--force" ]; then
-	exec /usr/sbin/pvrsrvinit_r$SGX_CORE_REV
+	/usr/sbin/pvrsrvinit_r$SGX_CORE_REV
+	echo "/usr/sbin/pvrsrvinit_r$SGX_CORE_REV returned $(echo $?)."
+	exec /bin/systemd-notify --ready
 fi
+
