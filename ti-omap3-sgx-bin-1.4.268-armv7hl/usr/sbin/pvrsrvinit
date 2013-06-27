@@ -17,18 +17,18 @@ activate_driver_for_core_rev()
 		libPVRScopeServices \
 		libglslcompiler \
 		libIMGegl \
-		libEGL \
+		sgx/libEGL-sgx \
 		libOpenVG \
 		libOpenVGU \
 		libGLESv2 \
 		libGLES_CM; do
 		# Point the link at the correct library
-		if [ "$(readlink /usr/lib/$LIB.so)" != "${LIB}_r${SGX_CORE_REV}.so" ]; then
-			ln -fs "${LIB}_r${SGX_CORE_REV}.so" "/usr/lib/$LIB.so"
+		if [ "$(readlink /usr/lib/$LIB.so)" != "$(basename ${LIB}_r${SGX_CORE_REV}.so)" ]; then
+			ln -fs "$(basename ${LIB}_r${SGX_CORE_REV}.so)" "/usr/lib/$LIB.so"
 		fi
 		# Delete the unneeded libraries
 		for LIBFILE in /usr/lib/${LIB}_r*.so; do
-			if [ "$(readlink /usr/lib/$LIB.so)" != "$(basename $LIBFILE)" ]; then
+			if [ "$(basename $(readlink /usr/lib/$LIB.so))" != "$(basename $LIBFILE)" ]; then
 				rm -f "$LIBFILE"
 			fi
 		done
