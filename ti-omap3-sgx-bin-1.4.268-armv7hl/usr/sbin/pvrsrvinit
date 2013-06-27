@@ -1,0 +1,92 @@
+#!/bin/bash
+
+#
+# Script to initialize the SGX userspace driver based on the SGX core revision
+#
+activate_driver_for_core_rev()
+{
+	SGX_CORE_REV=$1
+	for LIB in \
+		libpvrPVR2D_FLIPWSEGL \
+		libpvrPVR2D_BLITWSEGL \
+		libpvrPVR2D_DRI2WSEGL \
+		libpvrPVR2D_FRONTWSEGL \
+		libpvrPVR2D_X11WSEGL \
+		libpvr2d \
+		libsrv_um \
+		libPVRScopeServices \
+		libglslcompiler \
+		libIMGegl \
+		libEGL \
+		libOpenVG \
+		libOpenVGU \
+		libGLESv2 \
+		libGLES_CM; do
+		# Point the link at the correct library
+		if [ "$(readlink /usr/lib/$LIB.so)" != "${LIB}_r${SGX_CORE_REV}.so" ]; then
+			ln -fs "${LIB}_r${SGX_CORE_REV}.so" "/usr/lib/$LIB.so"
+		fi
+		# Delete the unneeded libraries
+		for LIBFILE in /usr/lib/${LIB}_r*.so; do
+			if [ "$(readlink /usr/lib/$LIB.so)" != "$(basename $LIBFILE)" ]; then
+				rm -f "$LIBFILE"
+			fi
+		done
+		# Delete stale symlinks
+		if [ \( -L "/usr/lib/$LIB.so" \) -a ! -f "/usr/lib/$LIB.so" ]; then
+			rm -f "/usr/lib/$LIB.so"
+		fi
+	done
+
+	for BIN in pvrsrvinit; do
+		# Delete the unneeded binaries
+		for BINFILE in /usr/sbin/${BIN}_r*; do
+			if [ "$(basename $BINFILE)" != "${BIN}_r${SGX_CORE_REV}" ]; then
+				rm -f "$BINFILE"
+			fi
+		done
+	done
+}
+
+# Cannot bring up the hardware under scratchbox
+test -f /targets/links/scratchbox.config && exit 0
+
+if [ "$1" == "--force" ]; then
+	modprobe pvrsrvkm &> /dev/null
+	mkdir -p /var/lib/opengles-sgx-img
+	touch /var/lib/opengles-sgx-img/upgrade
+else
+	modprobe pvrsrvkm
+fi
+
+if [ \! -f /proc/pvr/version ]; then
+	if [ "$1" != "--force" ]; then
+		echo "SGX driver failed to initialize" > /dev/console
+	fi
+	exit 1
+fi
+
+SGX_CORE_REV=$(grep -Eo "SGX revision = ([0-9][.][0-9][.][0-9])" \
+	       /proc/pvr/version | cut -d= -f 2 | tr -d ". ")
+
+if [ "$SGX_CORE_REV" = "" ]; then
+	echo "Unable to determine SGX core revision" > /dev/console
+	exit 1
+fi
+
+if [ \! -f /usr/sbin/pvrsrvinit_r$SGX_CORE_REV ]; then
+	echo "Unsupported SGX core revision" > /dev/console
+	exit 1
+fi
+
+# Activate the correct SGX libraries and binaries based on the chip revision
+if [ "$(readlink /usr/lib/libsrv_um.so)" != "libsrv_um_r${SGX_CORE_REV}.so" -o \
+     -e /var/lib/opengles-sgx-img/upgrade ]; then
+	activate_driver_for_core_rev $SGX_CORE_REV
+	rm /var/lib/opengles-sgx-img/upgrade
+	rmdir /var/lib/opengles-sgx-img
+fi
+
+if [ "$1" != "--force" ]; then
+	exec /usr/sbin/pvrsrvinit_r$SGX_CORE_REV
+fi

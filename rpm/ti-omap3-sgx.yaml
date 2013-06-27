@@ -1,0 +1,84 @@
+Name: ti-omap3-sgx
+Summary: ImgTec SGX drivers for TI OMAP3
+Version: 1.4.268.2
+Release: 1
+Group: Graphics/Display and Graphics Adaptation
+License: TI Proprietary
+Sources:
+    - "%{name}-bin-1.4.268-armv7hl.tar.bz2"
+    - "license.txt"
+    - "%{name}-powervr.ini"
+    - "%{name}.udev"
+    - "%{name}.service"
+    - "Meego_IMG-08172010-license_txt.doc"
+    - "ti-omap3-sgx.conf"
+    - "ti-omap3-sgx-update.sh"
+Patches:
+    - 0001-If-dir-and-or-file-doesn-t-exist-lets-not-cause-warn.patch
+    - 0002-Don-t-hide-error-messages.patch
+    - 0003-Ignore-return-value-and-notify-systemd-that-we-are-d.patch
+    - 0004-install-libegl-sgx-instead.patch
+Description: OMAP3 drivers for SGX
+Configure: none
+Builder: none
+ExclusiveArch: "armv7hl armv7nhl armv7thl armv7tnhl armv8el"
+Requires:
+    # mkdir, touch, grep required for pvrsrvinit
+    - coreutils
+    - grep
+    # modprobe
+    - kmod >= 9
+    - ti-omap3-sgx-wayland-wsegl
+Provides:
+    - libGLESv1
+    - libGLESv1_CM.so.1
+    - libGLESv2
+    - libGLESv2.so.2
+    - "%{name}-libEGL > 1.4.268"
+    - "%{name}-libGLESv1 > 1.4.268"
+    - "%{name}-libGLESv2 > 1.4.268"
+Obsoletes:
+    - "%{name}-libEGL <= 1.4.268"
+    - "%{name}-libGLESv1 <= 1.4.268"
+    - "%{name}-libGLESv2 <= 1.4.268"
+Conflicts:
+    # At times mesa gets dragged in to image and it breaks
+    # the installation lets make sure that doesn't happen.
+    - mesa-llvmpipe
+
+SubPackages:
+    - Name: devel
+      Summary: PowerVR SGX support development files
+      Group: Development/Libraries
+      Description: |
+          This package provides common development files for PowerVR SGX.
+
+    - Name: libEGL-devel
+      Summary: EGL development headers for SGX
+      Group: Development/Libraries
+      Description: | 
+           %{summary}.
+      Requires:
+           - "%{name}-devel = %{version}-%{release}"
+      Provides:
+           - libEGL-devel
+
+    - Name: libGLESv1-devel
+      Summary: GLESv1 development headers for SGX
+      Group: Development/Libraries
+      Description: | 
+           %{summary}.
+      Requires:
+           - "%{name}-devel = %{version}-%{release}"
+      Provides:
+           - libGLESv1-devel
+
+    - Name: libGLESv2-devel
+      Summary: GLESv2 development headers for SGX
+      Group: Development/Libraries
+      Description: | 
+           %{summary}.
+      Requires:
+           - "%{name}-devel = %{version}-%{release}"
+      Provides:
+           - libGLESv2-devel

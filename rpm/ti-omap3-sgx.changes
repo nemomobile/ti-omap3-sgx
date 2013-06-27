@@ -1,0 +1,80 @@
+* Thu May 30 2013 Reto Zingg <reto.zingg@jollamobile.com> - 1.4.268.1
+- fix symlink and Provides according to Mesa naming
+
+* Fri Apr 26 2013 Marko Saukko <marko.saukko@jollamobile.com> - 1.4.268.1
+- Don't try to notify systemd when --force is used as it is meant only
+  for cases where package ugrade is done.
+
+* Thu Apr 25 2013 Marko Saukko <marko.saukko@jollamobile.com> - 1.4.268.1
+- Change service from oneshot to notify and notify systemd when initialization is done
+- Make sure we start before graphical.target
+
+* Wed Apr 17 2013 Marko Saukko <marko.saukko@jollamobile.com> - 1.4.268.1
+- Make sure mesa-llvmpipe doesn't get installed with this.
+
+* Sat Apr 13 2013 Marko Saukko <marko.saukko@jollamobile.com> - 1.4.268.1
+- Add 0001-If-dir-and-or-file-doesn-t-exist-lets-not-cause-warn.patch to make warnings go away
+- Merge libEGL, libGLESv1 and libGLESv2 to the main package as
+  all those binaries are needed by the pvrsinit script that is executed
+  after main package is installed.
+- Ghost files that are created with pvrsrvinit script on the first run
+  so that they will be right even after updating the package
+- Add 0001-Don-t-hide-error-messages.patch to show errors in journal when they happen
+- Depend on kmod to make sure modprobe is available
+- Force running of /usr/sbin/pvrsrvinit on package updates to make sure links are right
+
+* Thu Nov 1 2012 Islam Amer <islam.amer@jollamobile.com> - 1.4.268
+- Use systemd module loading to workaround startup race condition
+- Move modprobe omaplfb to after pvrsrvinit is done 
+
+* Tue Oct 30 2012 Bernd Wachter <bernd.wachter@jollamobile.com> - 1.4.268
+- Move from graphical.target to basic.target to start it up as early as possible,
+  allowing early boot access to accelerated framebuffer
+- Remove dependency to uxlaunch, it's no longer needed after changing target,
+  and was breaking boot with user sessions in graphical.target
+
+* Mon Oct 15 2012 Marko Saukko <marko.saukko@jollamobile.com> - 1.4.268
+- ExcludeArch to armv7hl, armv7nhl, armv7thl, armv7tnhl and armv8el as we provide 
+  binary compatibility only for those.
+
+* Fri Aug 10 2012 Marko Saukko <marko.saukko@jollamobile.com> - 1.4.268
+- Also require coreutils and grep to make sure pvrsrvinit works properly.
+- Add After=local-fs.target to make sure we have filesystem available when
+  loading the driver.
+
+* Mon Jan 23 2012 Marko Saukko <marko.saukko@cybercom.com> - 1.4.268
+- Change pvrsrvkm udev rule from OWNER="meego" to GROUP="video" to allow 
+  username changes.
+- Change service from multi-user.target to graphical.target.
+
+* Wed Nov 23 2011 Marko Saukko <marko.saukko@cybercom.com> - 1.4.268
+- Merged .sh file content with .service file.
+
+* Thu Nov 17 2011 Marko Saukko <marko.saukko@cybercom.com> - 1.4.268
+- Changed systemd service to multi-user.target.
+- Added boss.conf to bypass source test.
+- Fixed problem where rpm didn't see some provide libs properly.
+
+* Sun Oct 30 2011 Carsten Munk <carsten@maemo.org> - 1.4.268
+- Upgrade to .268
+
+* Fri Oct 21 2011 Carsten Munk <carsten@maemo.org> - 1.4.20090218.189
+- Upgrade spectacle and fix some warnings
+
+* Thu Jun 02 2011 Marko Saukko <marko.saukko@cybercom.com> - 1.4.20090218.189
+- Initial changes from sysvinit to systemd (FEA#16109).
+
+* Fri Mar 18 2011 Carsten Munk <carsten@maemo.org> - 1.4.20090218.189
+- Packaging error: make it build on hardfp/armv8el too.
+
+* Wed Jan 12 2011 Marko Saukko <marko.saukko@cybercom.com> - 1.4.20090218.189
+- Minor packaging cleanup and group change to "Graphics/Display and Graphics Adaptation"
+
+* Tue Jan 11 2011 Carsten Munk <carsten@maemo.org> - 1.4.20090218.189
+- Add armv7hl support
+
+* Fri Aug 20 2010 Carsten Munk <carsten@maemo.org> - 1.4.20090218.189
+- Upgrade to .189, fixes BMC#7690
+
+* Fri Aug 20 2010 Markus Lehtonen <markus.lehtonen@nokia.com> - 1.4.20090218.110
+- Initial packaging for drivers.
