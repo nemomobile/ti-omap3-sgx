@@ -13,11 +13,6 @@ Sources:
     - "Meego_IMG-08172010-license_txt.doc"
     - "ti-omap3-sgx.conf"
     - "ti-omap3-sgx-update.sh"
-Patches:
-    - 0001-If-dir-and-or-file-doesn-t-exist-lets-not-cause-warn.patch
-    - 0002-Don-t-hide-error-messages.patch
-    - 0003-Ignore-return-value-and-notify-systemd-that-we-are-d.patch
-    - 0004-install-libegl-sgx-instead.patch
 Description: OMAP3 drivers for SGX
 Configure: none
 Builder: none

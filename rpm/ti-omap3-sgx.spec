@@ -24,10 +24,6 @@ Source5:    Meego_IMG-08172010-license_txt.doc
 Source6:    ti-omap3-sgx.conf
 Source7:    ti-omap3-sgx-update.sh
 Source100:  ti-omap3-sgx.yaml
-Patch0:     0001-If-dir-and-or-file-doesn-t-exist-lets-not-cause-warn.patch
-Patch1:     0002-Don-t-hide-error-messages.patch
-Patch2:     0003-Ignore-return-value-and-notify-systemd-that-we-are-d.patch
-Patch3:     0004-install-libegl-sgx-instead.patch
 Requires:   coreutils
 Requires:   grep
 Requires:   kmod >= 9
@@ -96,16 +92,8 @@ Provides:   libGLESv2-devel
 
 
 %prep
-%setup -q -n %{name}-bin-1.4.268-armv7hl
+%setup -q -n %{name}-%{version}
 
-# 0001-If-dir-and-or-file-doesn-t-exist-lets-not-cause-warn.patch
-%patch0 -p1
-# 0002-Don-t-hide-error-messages.patch
-%patch1 -p1
-# 0003-Ignore-return-value-and-notify-systemd-that-we-are-d.patch
-%patch2 -p1
-# 0004-install-libegl-sgx-instead.patch
-%patch3 -p1
 # >> setup
 cp -v %{SOURCE1} .
 cp -v %{SOURCE5} .
@@ -125,18 +113,15 @@ cp -v %{SOURCE5} .
 rm -rf %{buildroot}
 # >> install pre
 # wayland-wsegl provides this, and proxies to the SGL driver
-mkdir usr/lib/sgx
+mkdir -p usr/lib/sgx
 mv usr/lib/libEGL.so usr/lib/sgx/libEGL-sgx.so
 mv usr/lib/libEGL_r121.so usr/lib/sgx/libEGL-sgx_r121.so
 mv usr/lib/libEGL_r125.so usr/lib/sgx/libEGL-sgx_r125.so
 
 install -d $RPM_BUILD_ROOT/
-cp -arv * $RPM_BUILD_ROOT/
-
-# Goes in later.
-rm $RPM_BUILD_ROOT/license.txt
+cp -arv usr $RPM_BUILD_ROOT/
 rm -rf $RPM_BUILD_ROOT/usr/share/doc/ti-omap3-sgx-bin*
-rm $RPM_BUILD_ROOT/Meego_IMG-08172010-license_txt.doc
+
 
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/powervr.ini
@@ -184,8 +169,6 @@ systemctl daemon-reload
 %files
 %defattr(-,root,root,-)
 # >> files
-%doc license.txt
-%doc Meego_IMG-08172010-license_txt.doc
 %config %{_sysconfdir}/powervr.ini
 %config %{_sysconfdir}/udev/rules.d/10-pvrsrvkm.rules
 %{_libdir}/libIMGegl_r12*.so
@@ -234,8 +217,6 @@ systemctl daemon-reload
 %files devel
 %defattr(-,root,root,-)
 # >> files devel
-%doc license.txt
-%doc Meego_IMG-08172010-license_txt.doc
 %{_includedir}/SGX/hwdefs
 %{_includedir}/SGX/include4
 %{_includedir}/pvr2d.h
@@ -244,8 +225,6 @@ systemctl daemon-reload
 %files libEGL-devel
 %defattr(-,root,root,-)
 # >> files libEGL-devel
-%doc license.txt
-%doc Meego_IMG-08172010-license_txt.doc
 %{_includedir}/KHR/*.h
 %{_includedir}/EGL/*.h
 # << files libEGL-devel
@@ -253,15 +232,11 @@ systemctl daemon-reload
 %files libGLESv1-devel
 %defattr(-,root,root,-)
 # >> files libGLESv1-devel
-%doc license.txt
-%doc Meego_IMG-08172010-license_txt.doc
 %{_includedir}/GLES/*.h
 # << files libGLESv1-devel
 
 %files libGLESv2-devel
 %defattr(-,root,root,-)
 # >> files libGLESv2-devel
-%doc license.txt
-%doc Meego_IMG-08172010-license_txt.doc
 %{_includedir}/GLES2/*.h
 # << files libGLESv2-devel
