@@ -15,7 +15,7 @@ Release:    1
 Group:      Graphics/Display and Graphics Adaptation
 License:    TI Proprietary
 ExclusiveArch:  armv7hl armv7nhl armv7thl armv7tnhl armv8el
-Source0:    %{name}-bin-1.4.268-armv7hl.tar.bz2
+Source0:    %{name}-%{version}.tar.bz2
 Source1:    license.txt
 Source2:    %{name}-powervr.ini
 Source3:    %{name}.udev
