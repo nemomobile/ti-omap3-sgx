@@ -28,6 +28,7 @@ Requires:   coreutils
 Requires:   grep
 Requires:   kmod >= 9
 Requires:   ti-omap3-sgx-wayland-wsegl
+Requires:   %{name}-configs
 Requires:   systemd
 Requires(preun): systemd
 Requires(post): /sbin/ldconfig
@@ -88,6 +89,16 @@ Requires:   %{name}-devel = %{version}-%{release}
 Provides:   libGLESv2-devel
 
 %description libGLESv2-devel
+%{summary}.
+
+
+%package configs-default
+Summary:    configurations for ti-omap3-sgx package
+Group:      Configs
+Requires:   %{name} = %{version}-%{release}
+Provides:   %{name}-configs
+
+%description configs-default
 %{summary}.
 
 
@@ -169,7 +180,6 @@ systemctl daemon-reload
 %files
 %defattr(-,root,root,-)
 # >> files
-%config %{_sysconfdir}/powervr.ini
 %config %{_sysconfdir}/udev/rules.d/10-pvrsrvkm.rules
 %{_libdir}/libIMGegl_r12*.so
 %ghost %{_libdir}/libIMGegl.so
@@ -240,3 +250,9 @@ systemctl daemon-reload
 # >> files libGLESv2-devel
 %{_includedir}/GLES2/*.h
 # << files libGLESv2-devel
+
+%files configs-default
+%defattr(-,root,root,-)
+# >> files configs-default
+%config %{_sysconfdir}/powervr.ini
+# << files configs-default

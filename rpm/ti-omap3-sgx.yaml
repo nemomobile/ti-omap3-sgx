@@ -5,7 +5,7 @@ Release: 1
 Group: Graphics/Display and Graphics Adaptation
 License: TI Proprietary
 Sources:
-    - "%{name}-bin-1.4.268-armv7hl.tar.bz2"
+    - "%{name}-%{version}.tar.bz2"
     - "license.txt"
     - "%{name}-powervr.ini"
     - "%{name}.udev"
@@ -24,6 +24,7 @@ Requires:
     # modprobe
     - kmod >= 9
     - ti-omap3-sgx-wayland-wsegl
+    - "%{name}-configs"
 Provides:
     - libGLESv1
     - libGLESv1_CM.so.1
@@ -77,3 +78,11 @@ SubPackages:
            - "%{name}-devel = %{version}-%{release}"
       Provides:
            - libGLESv2-devel
+    - Name: configs-default
+      Summary: configurations for ti-omap3-sgx package
+      Group: Configs
+      Description: |
+           %{summary}.
+      Provides:
+           - "%{name}-configs"
+
