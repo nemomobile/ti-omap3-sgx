@@ -140,10 +140,6 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/powervr.ini
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-pvrsrvkm.rules
 
-# Integrate into Mesa naming.
-ln -s libGLESv2.so $RPM_BUILD_ROOT%{_libdir}/libGLESv2.so.2
-ln -s libGLES_CM.so $RPM_BUILD_ROOT%{_libdir}/libGLESv1_CM.so.1
-
 # Fix permission so rpm can automatically find what libs are provided
 chmod a+x $RPM_BUILD_ROOT%{_libdir}/*.so
 
@@ -218,10 +214,8 @@ systemctl daemon-reload
 %ghost %{_libdir}/sgx/libEGL-sgx.so
 %{_libdir}/libGLES_CM_r12*.so
 %ghost %{_libdir}/libGLES_CM.so
-%{_libdir}/libGLESv1_CM.so.1
 %{_libdir}/libGLESv2_r12*.so
 %ghost %{_libdir}/libGLESv2.so
-%{_libdir}/libGLESv2.so.2
 # << files
 
 %files devel
