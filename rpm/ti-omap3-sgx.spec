@@ -140,6 +140,12 @@ install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/powervr.ini
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/udev/rules.d/10-pvrsrvkm.rules
 
+### NEMO#685 -- read bug, and drop at some point
+# Integrate into Mesa naming.
+ln -s libGLESv2.so $RPM_BUILD_ROOT%{_libdir}/libGLESv2.so.2
+ln -s libGLES_CM.so $RPM_BUILD_ROOT%{_libdir}/libGLESv1_CM.so.1
+###
+
 # Fix permission so rpm can automatically find what libs are provided
 chmod a+x $RPM_BUILD_ROOT%{_libdir}/*.so
 
@@ -166,12 +172,18 @@ systemctl reload-or-try-restart %{name}.service
 if [ "$1" -eq 2 ]; then
 # on upgrades we want to make sure the links are pointing to right files
 /usr/sbin/pvrsrvinit --force
+/sbin/ldconfig
 fi
 # << post
 
 %postun
 /sbin/ldconfig
 systemctl daemon-reload
+# >> postun
+if [ "$1" -gt 1 ]; then
+/usr/sbin/pvrsrvinit --force
+fi
+# << postun
 
 %files
 %defattr(-,root,root,-)
@@ -216,6 +228,11 @@ systemctl daemon-reload
 %ghost %{_libdir}/libGLES_CM.so
 %{_libdir}/libGLESv2_r12*.so
 %ghost %{_libdir}/libGLESv2.so
+
+### NEMO#685 -- read bug, and drop at some point
+%{_libdir}/libGLESv1_CM.so.1
+%{_libdir}/libGLESv2.so.2
+###
 # << files
 
 %files devel
