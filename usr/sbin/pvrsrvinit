@@ -80,7 +80,7 @@ if [ \! -f /usr/sbin/pvrsrvinit_r$SGX_CORE_REV ]; then
 fi
 
 # Activate the correct SGX libraries and binaries based on the chip revision
-if [ "$(readlink /usr/lib/libsrv_um.so)" != "libsrv_um_r${SGX_CORE_REV}.so" -o \
+if [ "$(readlink /usr/lib/sgx/libEGL-sgx.so)" != "libEGL-sgx_r${SGX_CORE_REV}.so" -o \
      -e /var/lib/opengles-sgx-img/upgrade ]; then
 	activate_driver_for_core_rev $SGX_CORE_REV
 	rm -rf /var/lib/opengles-sgx-img
